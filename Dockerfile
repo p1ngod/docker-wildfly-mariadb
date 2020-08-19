@@ -13,12 +13,12 @@ RUN mkdir -p ${JBOSS_HOME}/custom \
     && sha256sum mariadb-java-client-${MARIADB_CONNECTOR_VERSION}.jar | grep ${MARIADB_CONNECTOR_SHA256} \
     && printf '<module xmlns="urn:jboss:module:1.3" name="org.mariadb">\n\
         <resources>\n\
-            <resource-root path="mariadb-java-client-${MARIADB_CONNECTOR_VERSION}.jar"/>\n\
+            <resource-root path="mariadb-java-client-%s.jar"/>\n\
         </resources>\n\
         <dependencies>\n\
             <module name="javax.api"/>\n\
             <module name="javax.transaction.api"/>\n\
         </dependencies>\n\
-    </module>' > module.xml
+    </module>' "${MARIADB_CONNECTOR_VERSION}" > module.xml
 
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
