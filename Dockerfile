@@ -1,4 +1,4 @@
-FROM jboss/wildfly:23.0.2.Final
+FROM jboss/wildfly:24.0.0.Final
 
 # Set ENV variables for MariaDB dependency
 ENV MARIADB_CONNECTOR_VERSION 2.7.3
