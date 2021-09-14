@@ -3,14 +3,14 @@
 # Use latest jboss/base-jdk:11 image as the base
 FROM jboss/base-jdk:11
 
-# Set the WILDFLY_VERSION and MARIADB_CONNECTOR_VERSION env variables
-# and ensure signals are forwarded to the JVM process correctly for graceful shutdown
-ENV WILDFLY_VERSION 24.0.1.Final \
-    WILDFLY_SHA1 751e3ff9128a6fbe72016552a9b864f729a710cc \
-    MARIADB_CONNECTOR_VERSION 2.7.4 \
-    MARIADB_CONNECTOR_SHA256 f06577b19e89b33028b96cd4f031248e761de7ebc712f4ef535e268df76edb2a \
-    JBOSS_HOME /opt/jboss/wildfly \
-    LAUNCH_JBOSS_IN_BACKGROUND true
+# Set the WILDFLY_VERSION env variable
+ENV WILDFLY_VERSION 24.0.1.Final
+ENV WILDFLY_SHA1 751e3ff9128a6fbe72016552a9b864f729a710cc
+ENV JBOSS_HOME /opt/jboss/wildfly
+
+# Set ENV variables for MariaDB dependency
+ENV MARIADB_CONNECTOR_VERSION 2.7.4
+ENV MARIADB_CONNECTOR_SHA256 f06577b19e89b33028b96cd4f031248e761de7ebc712f4ef535e268df76edb2a  
 
 USER root
 
@@ -38,6 +38,9 @@ RUN cd $HOME \
     </module>' "${MARIADB_CONNECTOR_VERSION}" > module.xml \
     && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
+
+# Ensure signals are forwarded to the JVM process correctly for graceful shutdown
+ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 USER jboss
 
