@@ -1,12 +1,28 @@
-FROM jboss/wildfly:24.0.0.Final
+# this file is derived from https://github.com/jboss-dockerfiles/wildfly so copyright for original sources goes to RedHat (https://github.com/jboss-dockerfiles/wildfly/blob/master/LICENSE)
 
-# Set ENV variables for MariaDB dependency
-ENV MARIADB_CONNECTOR_VERSION 2.7.3
-ENV MARIADB_CONNECTOR_SHA256 7c823b2f8fdda522a7f76e69cb287482b46247c135c4c44b27b98fb2ae092747
+# Use latest jboss/base-jdk:11 image as the base
+FROM jboss/base-jdk:11
 
-# already USER jboss so no switching necessary
+# Set the WILDFLY_VERSION and MARIADB_CONNECTOR_VERSION env variables
+# and ensure signals are forwarded to the JVM process correctly for graceful shutdown
+ENV WILDFLY_VERSION 24.0.1.Final \
+    WILDFLY_SHA1 751e3ff9128a6fbe72016552a9b864f729a710cc \
+    MARIADB_CONNECTOR_VERSION 2.7.4 \
+    MARIADB_CONNECTOR_SHA256 f06577b19e89b33028b96cd4f031248e761de7ebc712f4ef535e268df76edb2a \
+    JBOSS_HOME /opt/jboss/wildfly \
+    LAUNCH_JBOSS_IN_BACKGROUND true
 
-RUN mkdir -p ${JBOSS_HOME}/custom \
+USER root
+
+# Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
+# Make sure the distribution is available from a well-known place
+RUN cd $HOME \
+    && curl -O https://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz \
+    && sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
+    && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
+    && mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
+    && rm wildfly-$WILDFLY_VERSION.tar.gz \
+    && mkdir -p ${JBOSS_HOME}/custom \
     && mkdir -p ${JBOSS_HOME}/modules/org/mariadb/main \
     && cd ${JBOSS_HOME}/modules/org/mariadb/main \
     && curl -O https://downloads.mariadb.com/Connectors/java/connector-java-${MARIADB_CONNECTOR_VERSION}/mariadb-java-client-${MARIADB_CONNECTOR_VERSION}.jar \
@@ -19,6 +35,15 @@ RUN mkdir -p ${JBOSS_HOME}/custom \
             <module name="javax.api"/>\n\
             <module name="javax.transaction.api"/>\n\
         </dependencies>\n\
-    </module>' "${MARIADB_CONNECTOR_VERSION}" > module.xml
+    </module>' "${MARIADB_CONNECTOR_VERSION}" > module.xml \
+    && chown -R jboss:0 ${JBOSS_HOME} \
+    && chmod -R g+rw ${JBOSS_HOME}
 
+USER jboss
+
+# Expose the ports in which we're interested
+EXPOSE 8080
+
+# Set the default command to run on boot
+# This will boot WildFly in standalone mode and bind to all interfaces
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
