@@ -39,7 +39,7 @@ jobs:
         id: docker_build_im
         uses: docker/build-push-action@v2
         with:
-          file: "{context}/Dockerfile-imagemagick"
+          file: "Dockerfile-imagemagick"
           push: true
           tags: ${{ steps.meta_im.outputs.tags }}
           labels: ${{ steps.meta_im.outputs.labels }}
