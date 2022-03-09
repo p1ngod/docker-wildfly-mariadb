@@ -1,10 +1,10 @@
-FROM jboss/wildfly:24.0.0.Final
+FROM bitnami/wildfly:26.0.1
 
-# Set ENV variables for MariaDB dependency
-ENV MARIADB_CONNECTOR_VERSION 2.7.3
-ENV MARIADB_CONNECTOR_SHA256 7c823b2f8fdda522a7f76e69cb287482b46247c135c4c44b27b98fb2ae092747
+USER root
 
-# already USER jboss so no switching necessary
+ENV MARIADB_CONNECTOR_VERSION 3.0.3
+ENV MARIADB_CONNECTOR_SHA256 613086a0a20f177dfcf5e227f519272bc6be88bde4011de0f23c533231a7ae05
+ENV JBOSS_HOME /opt/bitnami/wildfly
 
 RUN mkdir -p ${JBOSS_HOME}/custom \
     && mkdir -p ${JBOSS_HOME}/modules/org/mariadb/main \
@@ -19,6 +19,12 @@ RUN mkdir -p ${JBOSS_HOME}/custom \
             <module name="javax.api"/>\n\
             <module name="javax.transaction.api"/>\n\
         </dependencies>\n\
-    </module>' "${MARIADB_CONNECTOR_VERSION}" > module.xml
+    </module>' "${MARIADB_CONNECTOR_VERSION}" > module.xml \
+    && mkdir /data \
+    && chown 1001:1001 /data \
+    && rm /opt/bitnami/wildfly/standalone/deployments/*.jar \
+    && install_packages imagemagick
 
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
+USER 1001
+
+ADD /standalone.xml /bitnami/wildfly/configuration/
