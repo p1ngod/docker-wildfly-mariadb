@@ -1,4 +1,5 @@
-FROM bitnami/wildfly:26
+ARG WILDFLY_IMAGE=bitnami/wildfly:latest
+FROM $WILDFLY_IMAGE
 
 USER root
 
