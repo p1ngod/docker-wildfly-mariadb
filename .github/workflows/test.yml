@@ -4,13 +4,13 @@ on:
 
 jobs:
   scan:
-    name: List Recent Updates
+    name: Find Recent Updates
     runs-on: ubuntu-latest
     outputs:
-      matrix: "[${{ steps.filter_tags.outputs.replaced }}]"
+      matrix: "[${{ steps.filter_tags.outputs.tags }}]"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Scan Docker Repository
         uses: dhet/scan-docker-tags-action@v1.0.1
         with:
@@ -20,12 +20,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         id: scan
       - name: Filter tags
-        uses: frabert/replace-string-action@v2.0
+        uses: ./.github/actions/filter-tags
         with:
-          pattern: '[^,]+'
-          string: ${{ steps.scan.outputs.tags }}
-          replace-with: '{"tag":"$&"}'
-          flags: 'g'
+          tags: ${{ steps.scan.outputs.tags }}
+          major: 26
         id: filter_tags
       - name: Print
-        run: "echo 'Recent updates: \"[${{ steps.filter_tags.outputs.replaced }}]\"'"
+        run: "echo 'Recent updates: ${{ steps.filter_tags.outputs.tags }}'"

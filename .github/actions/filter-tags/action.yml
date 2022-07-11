@@ -1,0 +1,15 @@
+name: 'Filter tags'
+description: 'Filters a supplied list of tags by major release version and returns it as JSON array'
+inputs:
+  tags:
+    description: 'A comma-separated list of tags to filter'
+    required: true
+  major:
+    description: 'The major version number used for filtering'
+    required: true
+outputs:
+  tags:
+    description: 'The filtered tag list as JSON array'
+runs:
+  using: 'node16'
+  main: 'index.js'
