@@ -7,7 +7,7 @@ jobs:
     name: Find Recent Updates
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.filter_tags.outputs.tags }}
+      matrix: ${{ steps.filter_tags.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

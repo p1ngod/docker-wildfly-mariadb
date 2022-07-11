@@ -10,6 +10,8 @@ inputs:
 outputs:
   tags:
     description: 'The filtered tag list as JSON array'
+  matrix:
+    description: 'The filtered tag list as a GitHub matrix'
 runs:
   using: 'node16'
   main: 'index.js'
