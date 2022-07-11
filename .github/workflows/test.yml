@@ -6,6 +6,8 @@ jobs:
   scan:
     name: List Recent Updates
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.filter_tags.outputs.replaced }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,3 +21,10 @@ jobs:
         id: scan
       - name: Print
         run: "echo 'Recent updates: ${{ steps.scan.outputs.tags }}'"
+      - name: Filter tags
+        uses: frabert/replace-string-action@v2.0
+        with:
+          pattern: '[^,]+'
+          string: ${{ steps.scan.outputs.tags }}
+          replace-with: '{"tag":"$&"}'
+        id: filter_tags
