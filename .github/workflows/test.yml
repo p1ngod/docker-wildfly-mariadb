@@ -19,8 +19,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         id: scan
-      - name: Print
-        run: "echo 'Recent updates: ${{ steps.scan.outputs.tags }}'"
       - name: Filter tags
         uses: frabert/replace-string-action@v2.0
         with:
@@ -28,3 +26,5 @@ jobs:
           string: ${{ steps.scan.outputs.tags }}
           replace-with: '{"tag":"$&"}'
         id: filter_tags
+      - name: Print
+        run: "echo 'Recent updates: ${{ steps.filter_tags.outputs.replaced }}'"
