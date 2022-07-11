@@ -7,7 +7,7 @@ jobs:
     name: Find Recent Updates
     runs-on: ubuntu-latest
     outputs:
-      matrix: "[${{ steps.filter_tags.outputs.tags }}]"
+      matrix: ${{ steps.filter_tags.outputs.tags }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,3 +27,12 @@ jobs:
         id: filter_tags
       - name: Print
         run: "echo 'Recent updates: ${{ steps.filter_tags.outputs.tags }}'"
+  build:
+    name: Build docker images
+    needs: scan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJSON(needs.scan.outputs.matrix)}}
+    steps:
+      - name: Print
+        run: "echo 'Building docker image for base image \"bitnami/wildfly@${{ matrix.tag }}\"'"
