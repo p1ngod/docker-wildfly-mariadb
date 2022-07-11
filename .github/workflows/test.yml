@@ -7,7 +7,7 @@ jobs:
     name: List Recent Updates
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.filter_tags.outputs.replaced }}
+      matrix: "[${{ steps.filter_tags.outputs.replaced }}]"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -28,4 +28,4 @@ jobs:
           flags: 'g'
         id: filter_tags
       - name: Print
-        run: "echo 'Recent updates: ${{ steps.filter_tags.outputs.replaced }}'"
+        run: "echo 'Recent updates: \"[${{ steps.filter_tags.outputs.replaced }}]\"'"
