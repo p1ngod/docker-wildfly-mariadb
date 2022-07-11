@@ -1,4 +1,4 @@
-FROM bitnami/wildfly:26.0.1
+FROM bitnami/wildfly:26
 
 USER root
 
