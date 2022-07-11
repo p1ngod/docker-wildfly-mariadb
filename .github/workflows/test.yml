@@ -25,6 +25,7 @@ jobs:
           pattern: '[^,]+'
           string: ${{ steps.scan.outputs.tags }}
           replace-with: '{"tag":"$&"}'
+          flags: 'g'
         id: filter_tags
       - name: Print
         run: "echo 'Recent updates: ${{ steps.filter_tags.outputs.replaced }}'"
