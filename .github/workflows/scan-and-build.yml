@@ -1,7 +1,7 @@
 name: Scan Docker repo and build images
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "24 3 * * *"
   workflow_dispatch:
     inputs:
       max_age_in_minutes:
@@ -20,7 +20,7 @@ jobs:
       - name: Set ENV vars
         run: |
           INPUT_MAX_AGE_IN_MINUTES=${{ github.event.inputs.max_age_in_minutes }}
-          echo "MAX_AGE_IN_MINUTES=${INPUT_MAX_AGE_IN_MINUTES:-1400}" >> $GITHUB_ENV
+          echo "MAX_AGE_IN_MINUTES=${INPUT_MAX_AGE_IN_MINUTES:-1560}" >> $GITHUB_ENV
       - name: Read major version file
         run: "cat version.properties >> $GITHUB_ENV" 
       - name: Scan Docker Repository
