@@ -18,6 +18,11 @@ try {
       });
     }
   });
+
+  if (!filteredTags) {
+    matrix = {};
+  }
+
   core.setOutput("count", filteredTags.length);
   core.setOutput("tags", JSON.stringify(filteredTags));
   core.setOutput("matrix", JSON.stringify(matrix));

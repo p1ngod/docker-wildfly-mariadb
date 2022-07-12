@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.filter_tags.outputs.matrix }}
-      tag_count: ${{ steps.filter_tags.outputs.count }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,7 +43,6 @@ jobs:
     name: Build docker images
     needs: scan
     runs-on: ubuntu-latest
-    if: needs.scan.outputs.tag_count
     strategy:
       matrix: ${{fromJSON(needs.scan.outputs.matrix)}}
     steps:
