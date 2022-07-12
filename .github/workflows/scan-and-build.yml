@@ -1,7 +1,7 @@
 name: Scan Docker repo and build images
 on:
   schedule:
-    - cron: "0 3 * * *"
+    - cron: "5 13 * * *"
   workflow_dispatch:
     inputs:
       max_age_in_minutes:
