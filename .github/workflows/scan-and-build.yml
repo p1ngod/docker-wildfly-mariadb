@@ -3,13 +3,11 @@ on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
-
-inputs:
-  maxAgeInMinutes:
-    description: 'The maximum age of a tag while scanning the Docker repo'
-    required: false
-    default: '1440'
-
+    inputs:
+      max_age_in_minutes:
+        description: 'The maximum age of a tag while scanning the Docker repo'
+        required: false
+        default: '1440'
 jobs:
   scan:
     name: Find Recent Updates
@@ -19,13 +17,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Set ENV vars
+        run: |
+          INPUT_MAX_AGE_IN_MINUTES=${{ github.event.inputs.max_age_in_minutes }}
+          echo "MAX_AGE_IN_MINUTES=${INPUT_MAX_AGE_IN_MINUTES:-1400}" >> $GITHUB_ENV
       - name: Read major version file
         run: "cat version.properties >> $GITHUB_ENV" 
       - name: Scan Docker Repository
         uses: dhet/scan-docker-tags-action@v1.0.1
         with:
           image: bitnami/wildfly
-          max-age-minutes: ${{ inputs.maxAgeInMinutes}}
+          max-age-minutes: ${{ env.MAX_AGE_IN_MINUTES }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         id: scan
