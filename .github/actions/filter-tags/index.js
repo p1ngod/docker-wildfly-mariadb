@@ -11,7 +11,7 @@ try {
   let filteredTags = [];
   let matrix = { include: [] };
   tagsString.split(",").forEach((tag) => {
-    if (tag.match(`^${major}(?:$|\\.)`)) {
+    if (tag.match(`^${major}(?:$|[\\.\\-])`)) {
       filteredTags.push(tag);
       matrix.include.push({
         tag: tag,

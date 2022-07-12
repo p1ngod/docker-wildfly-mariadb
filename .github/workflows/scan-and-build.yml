@@ -1,6 +1,14 @@
-name: Scan Docker Repo
+name: Scan Docker repo and build images
 on:
+  schedule:
+    - cron: "0 3 * * *"
   workflow_dispatch:
+
+inputs:
+  maxAgeInMinutes:
+    description: 'The maximum age of a tag while scanning the Docker repo'
+    required: false
+    default: '1440'
 
 jobs:
   scan:
@@ -17,7 +25,7 @@ jobs:
         uses: dhet/scan-docker-tags-action@v1.0.1
         with:
           image: bitnami/wildfly
-          max-age-minutes: 7200
+          max-age-minutes: ${{ inputs.maxAgeInMinutes}}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         id: scan
@@ -65,16 +73,18 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          push: false
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             WILDFLY_IMAGE=bitnami/wildfly:${{ matrix.tag }}
-#      - name: Build and push ImageMagick
-#        id: docker_build_im
-#        uses: docker/build-push-action@v3
-#        with:
-#          file: "Dockerfile-imagemagick"
-#          push: true
-#          tags: ${{ steps.meta_im.outputs.tags }}
-#          labels: ${{ steps.meta_im.outputs.labels }}
+      - name: Build and push ImageMagick
+        id: docker_build_im
+        uses: docker/build-push-action@v3
+        with:
+          file: "Dockerfile-imagemagick"
+          push: true
+          tags: ${{ steps.meta_im.outputs.tags }}
+          labels: ${{ steps.meta_im.outputs.labels }}
+          build-args: |
+            WILDFLY_IMAGE=bitnami/wildfly:${{ matrix.tag }}
