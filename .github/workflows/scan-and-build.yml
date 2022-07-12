@@ -43,6 +43,7 @@ jobs:
     name: Build docker images
     needs: scan
     runs-on: ubuntu-latest
+    if: needs.scan.outputs.tag_count != '0'
     strategy:
       matrix: ${{fromJSON(needs.scan.outputs.matrix)}}
     steps:
