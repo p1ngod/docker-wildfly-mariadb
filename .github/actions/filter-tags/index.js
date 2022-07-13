@@ -13,8 +13,12 @@ try {
   tagsString.split(",").forEach((tag) => {
     if (tag.match(`^${major}(?:$|[\\.\\-])`)) {
       filteredTags.push(tag);
+      let metaTag =
+        (tag == major ? "type=raw,value=latest\n" : "") +
+        `type=raw,value=${tag}`;
       matrix.include.push({
         tag: tag,
+        meta_tag: metaTag,
       });
     }
   });
