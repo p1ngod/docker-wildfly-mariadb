@@ -3,11 +3,12 @@ FROM $WILDFLY_IMAGE
 
 USER root
 
-ENV MARIADB_CONNECTOR_VERSION 3.0.6
-ENV MARIADB_CONNECTOR_SHA256 977ca7980b777b5aa8d32678204296a108f3eacbc4f210887e39b19869fad0d3
+ENV MARIADB_CONNECTOR_VERSION 3.0.8
+ENV MARIADB_CONNECTOR_SHA256 83697e1c44e77476123ab63cd8bb2ca96c1a349269f307c339f97caced2d0dd6
 ENV JBOSS_HOME /opt/bitnami/wildfly
 
-RUN mkdir -p ${JBOSS_HOME}/custom \
+RUN install_packages curl \
+    && mkdir -p ${JBOSS_HOME}/custom \
     && mkdir -p ${JBOSS_HOME}/modules/org/mariadb/main \
     && cd ${JBOSS_HOME}/modules/org/mariadb/main \
     && curl -O https://downloads.mariadb.com/Connectors/java/connector-java-${MARIADB_CONNECTOR_VERSION}/mariadb-java-client-${MARIADB_CONNECTOR_VERSION}.jar \
