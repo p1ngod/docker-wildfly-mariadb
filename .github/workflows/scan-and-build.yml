@@ -17,7 +17,7 @@ jobs:
       tag_count: ${{ steps.filter_tags.outputs.count }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set ENV vars
         run: |
           INPUT_MAX_AGE_IN_MINUTES=${{ github.event.inputs.max_age_in_minutes }}
@@ -49,7 +49,7 @@ jobs:
       matrix: ${{ fromJSON(needs.scan.outputs.matrix) }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Print
         run: "echo 'Building docker image for base image \"bitnami/wildfly:${{ matrix.tag }}\"'"
       - name: Docker meta
