@@ -6,6 +6,7 @@ USER root
 ENV MARIADB_CONNECTOR_VERSION 3.3.3
 ENV MARIADB_CONNECTOR_SHA256 89d71a6ffd800c032b23e588108688d391631f0aba962ba2381cc82cb111b796
 ENV JBOSS_HOME /opt/bitnami/wildfly
+ENV LANG C.UTF-8
 
 RUN install_packages curl \
     && mkdir -p ${JBOSS_HOME}/custom \
