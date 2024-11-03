@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<server xmlns="urn:jboss:domain:20.0">
+<server xmlns="urn:jboss:domain:community:20.0">
     <extensions>
         <extension module="org.jboss.as.clustering.infinispan"/>
         <extension module="org.jboss.as.connector"/>
@@ -131,7 +131,7 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:core-management:1.0"/>
-        <subsystem xmlns="urn:jboss:domain:datasources:7.1">
+        <subsystem xmlns="urn:jboss:domain:datasources:7.2">
             <datasources>
                 <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true" statistics-enabled="${wildfly.datasources.statistics-enabled:${wildfly.statistics-enabled:false}}">
                     <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=${wildfly.h2.compatibility.mode:REGULAR}</connection-url>
@@ -228,7 +228,7 @@
                     <file-data-store name="default-file-store" path="timer-service-data" relative-to="jboss.server.data.dir"/>
                 </data-stores>
             </timer-service>
-            <remote cluster="ejb" connectors="http-remoting-connector" thread-pool-name="default">
+            <remote connectors="http-remoting-connector" thread-pool-name="default">
                 <channel-creation-options>
                     <option name="MAX_OUTBOUND_MESSAGES" value="1234" type="remoting"/>
                 </channel-creation-options>
@@ -532,7 +532,7 @@
             <byte-buffer-pool name="default"/>
             <buffer-cache name="default"/>
             <server name="default-server">
-                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true" max-post-size="${env.WILDFLY_MAX_POST_SIZE:10485760}" proxy-address-forwarding="${env.WILDFLY_PROXY_ADDRESS_FORWARDING:true}"/>
+                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true" max-post-size="${env.WILDFLY_MAX_POST_SIZE:10485760}" proxy-address-forwarding="${env.WILDFLY_PROXY_ADDRESS_FORWARDING:true}" read-timeout="3600000" write-timeout="3600000"/>
                 <https-listener name="https" socket-binding="https" ssl-context="applicationSSC" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
